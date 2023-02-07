@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="Sight">  
+    
+   <select id="SightList" resultType="com.green.sight.vo.SightVo">
+		SELECT S_NAME, S_CODE,(NVL(S_GOOD,0))as S_GOOD 
+		FROM(
+			SELECT S_NAME, S_CODE, (NVL(S_GOOD,0))as S_GOOD
+			FROM SIGHT
+			ORDER BY S_GOOD DESC NULLS LAST
+			)
+		<![CDATA[WHERE ROWNUM <= 3]]> 
+    </select>
+    
+    <select id="SightList2" resultType="com.green.sight.vo.SightVo">
+		SELECT LAST.*
+		FROM (
+			SELECT ROWNUM RNUM, TEMP.*
+			FROM (
+    			SELECT S_NAME,S_CODE,(NVL(S_GOOD,0))AS S_GOOD
+    			FROM SIGHT
+    			ORDER BY S_GOOD DESC NULLS LAST
+    			) TEMP
+			)LAST
+		WHERE RNUM BETWEEN 4 AND 6
+    </select>
+    
+    
+     <select id="SightView" resultType="com.green.sight.vo.SightVo">
+	     
+	    	SELECT *
+			FROM SIGHT
+			WHERE S_LONGITUDE=#{tloc_Lng}		
+		  
+	
+    </select>
+    
+   
+    
+
+   <select id="SightTable" resultType="com.green.sight.vo.SightVo">
+		SELECT LAST.*
+		FROM(
+		    SELECT  ROWNUM RNUM, TEMP.*
+		    FROM (
+		        SELECT S_NAME,S_CODE
+		        FROM SIGHT
+		        ORDER BY S_NAME ASC
+		    ) TEMP
+		)LAST
+		ORDER BY RNUM ASC
+    </select>
+    
+    <!-- 명소 상세 보기 -->
+	<select id="SightInfoList" resultType="com.green.sight.vo.SightVo">
+		
+		SELECT *
+	  	FROM SIGHT
+	 	WHERE S_CODE  =  #{s_code}
+	 	
+    </select>
+    
+    <update id="SightReadCntUpdate">
+		UPDATE SIGHT
+		SET S_GOOD =S_GOOD+1
+		WHERE S_CODE = #{S_CODE}
+    </update>
+    
+
+    
+   
+    
+   
+
+</mapper>   
+
